@@ -1,0 +1,265 @@
+<div class="container main-content" ng-class="{collapsedHeader:collapseHeader}">
+	<div class="row">
+		<div class="col-md-12 main-content-area">
+			<div class="row">
+				<div class="col-md-2"></div>
+				<div class="col-md-10">
+					<div class="row rowspace"></div>
+					<form ng-submit="search()">
+						<!--  <div class="has-feedback">-->
+						<div class="input-group" style="width: 60%; padding-left: 20px;">
+							<input type="text" class="form-control" placeholder="Keyword search for GOI, Construct and Strain" id="txtSearchBox" style="height: 25px;" ng-model="gData.keyword" autocomplete="off" ng-init="setFocus()" /> <span class="input-group-addon" ng-click="search()" style="background-color: #00b050 !important; color: #ffffff !important; border: 1px solid #908f8f;"><i class="fa fa-search"></i></span>
+						</div>
+						<!-- </div>-->
+					</form>
+				</div>
+			</div>
+			<div class="row">
+				<div class="row rowspace"></div>
+				<div class="row" id="afterFirstSearch" style="height: 65vh;">
+					<div class="col-md-2 col-sm-4 col-xs-4" style="padding-right: 0px">
+						<div class="container-fluid" style="min-height: 65vh; margin: 5px; background: #d8d8d8; border: 1px solid #b1afaf; border-radius: 5px; padding-left: 10px; padding-right: 10px">
+							<div id="filter-container" style="padding-left: 5px;">
+								<h5 style="display: inline-block; width: 100%">
+									Refine by<a class="pull-right" id="resetAll" style="margin: 0px 0px; font-size: 12px; margin-top: 2px" ng-click="resetAll()">Reset all</a>
+								</h5>
+								<div ng-repeat="x in gData.filter">
+									<div id="x.entityName" class="filter" ng-if="x.entityName != 'Special'">
+										<div style="display: inline-block; font-size: 12px; width: 100%;">
+											<input style="vertical-align: text-bottom;" class="input" type="checkbox" ng-model="x.checked" ng-change="chkUnchkAll(x,false)" id="chk{{x.entityName}}" name="chk{{x.entityName}}" value="x.entityName">&nbsp;<span>{{x.entityName}}</span> <i class="pull-right glyphicon" ng-class="{'glyphicon-plus': x.show, 'glyphicon-minus': !x.show}" data-toggle="collapse"
+												data-target="#t{{x.entityName}}" ng-click="toggle(x)"></i>
+										</div>
+										<div id="t{{x.entityName}}" ng-if="!x.show" role="tabpanel" aria-labelledby="h{{x.entityName}}">
+											<ul style="list-style: none; padding-left: 11px">
+												<li ng-repeat="y in x.attributes"><input style="vertical-align: text-bottom;" class="input" type="checkbox" name="y.name" value="y.name" id="chk_{{y.indexName}}" type="checkbox" ng-model="y.Selected" ng-change="chkUnchkHeader(x)">&nbsp;<span>{{y.name}}</span></li>
+											</ul>
+										</div>
+									</div>
+								</div>
+								<div ng-repeat="x in gData.filter">
+									<div class="filter" ng-if="x.entityName == 'Special'" style="border-top: 2px solid #e7e7e7; margin-top: 5px;">
+										<div class="row rowspace"></div>
+										<div style="display: inline-block; font-size: 12px; width: 100%;" ng-repeat="y in x.attributes">
+											<input style="vertical-align: text-bottom;" class="input" type="checkbox" id="chk_{{y.indexName}}" name="y.indexName" value="y.name" ng-model="y.Selected" ng-change="search()">&nbsp;<span>{{y.name}}</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-10 col-sm-8 col-xs-8">
+						<div class="row rowspace"></div>
+						<div ng-if="gData.display.errorMsg" class="row text-left" style="font-weight: bolder; margin: 25px; color: #6b6b6b; font-size: 13px;" ng-bind="gData.searchMsg"></div>
+						<div ng-if="!gData.display.errorMsg" class="container-fluid" style="min-height: 65vh; margin: 5px; background: white; border-radius: 5px; padding-left: 0px;">
+							<div id="content" class="col-md-12" style="margin-bottom: 65px; padding-left: 0px">
+								<div ng-repeat="x in gData.searchResults.goi">
+									<div class="row">
+										<div class="col-md-9">
+											<table>
+												<tr>
+													<td style="padding: 0px; white-space: nowrap; width: 1%;"><span><b><a style="color: #0099e2; !important;" ng-bind="x.name" ng-click="openSequence(x.goiId)"></a></b></span></td>
+													<td style="padding: 0px; white-space: nowrap; text-align: left; padding-left: 5px; width: 1%;"><img style="height: 17px; cursor: pointer;" src="images/genealogy_new.png" ng-click="showGoiGenealogy('xlg', x)" alt="" title="View GOI Genealogy" /></td>
+													<td class="symbols" style="width: 1%; padding-left: 20px; vertical-align: middle;"><div class="square"></div></td>
+													<td style="padding: 0px; white-space: nowrap; text-align: left; padding-left: 5px; width: 80%;"><span ng-if="x.category == 'Gold'" style="background: orange; font-size: 10px; padding: 0px 3px;">[Gold GOI]</span><span ng-if="x.category != 'Gold'" class="entity-type">[{{x.entityType}}]</span></td>
+												</tr>
+											</table>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<span><b>Internal Reference: </b>{{x.internalRef}} <b>| Project: </b> {{x.projectName}}</span>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<span><b>Site: </b>{{x.siteName}} <b>| Author: </b> {{x.author}}</span>
+										</div>
+									</div>
+
+									<div class="row" ng-if="x.linkedEntityList.length > 0 && x.linkedEntityList[0].linkedConstructList != null">
+										<div class="col-md-12" style="margin-bottom: -15px;">
+											<div class="panel panel-info" style="margin-left: 25px; border-color: #d7d7d8;">
+												<!-- <div class="panel-heading" style="padding: 0px 10px; height: 15px;background-color: #e0ffdc; border-color: #b2ff92; color: #464646;">Linked Entities</div> -->
+												<div class="panel-body" style="padding: 0px 2px;">
+													<div ng-repeat="gList in x.linkedEntityList">
+														<div ng-repeat="cList in gList.linkedConstructList">
+															<div ng-if="cList.linkedStrainList != null && cList.linkedStrainList.length > 0">
+																<div ng-repeat="sList in cList.linkedStrainList" class="col-md-4" style="padding-right: 0px; border-right: 1px solid #ccc;">
+																	<table>
+																		<tr>
+																			<td style="width: 40%;padding-top: 2px;"><span><a style="color: #0965d8 !important;" ng-bind="gList.name" ng-click="openSequence(gList.goiId)"></a></span></td>
+																			<td style="width: 5%"><span class="glyphicon glyphicon-arrow-right" style="color: #686968"> </span></td>
+																			<td style="width: 25%"><span><a ng-if="cList.alias != 'N/A'" style="color: #0965d8 !important;" ng-bind="cList.alias" ng-click="openConstruct(cList.constructId)"></a><span style="color: #686968 !important;" ng-if="cList.alias == 'N/A'" ng-bind="cList.alias"></span></span></td>
+																			<td style="width: 5%"><span class="glyphicon glyphicon-arrow-right" style="color: #686968"> </span></td>
+																			<td style="width: 25%"><span><a style="color: #0965d8 !important;" ng-bind="sList.alias" ng-click="openStrain(sList.strainId)"></a></span></td>
+																		</tr>
+																	</table>
+																</div>
+															</div>
+															<div ng-if="!(cList.linkedStrainList != null && cList.linkedStrainList.length > 0)" class="col-md-4" style="padding-right: 0px; border-right: 1px solid #ccc;">
+																<table>
+																	<tr>
+																		<td style="width: 40%;padding-top: 2px;"><span><a style="color: #0965d8 !important;" ng-bind="gList.name" ng-click="openSequence(gList.goiId)"></a></span></td>
+																		<td style="width: 5%"><span class="glyphicon glyphicon-arrow-right" style="color: #686968"> </span></td>
+																		<td style="width: 25%"><span><a ng-if="cList.alias != 'N/A'" style="color: #0965d8 !important;" ng-bind="cList.alias" ng-click="openConstruct(cList.constructId)"></a><span style="color: #686968 !important;" ng-if="cList.alias == 'N/A'" ng-bind="cList.alias"></span></span></td>
+																		<td style="width: 5%"></td>
+																		<td style="width: 25%"></td>
+																	</tr>
+																</table>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+
+										</div>
+									</div>
+									<div class="row rowspace"></div>
+									<div class="row rowspace"></div>
+								</div>
+								<div ng-repeat="x in gData.searchResults.construct">
+									<div class="row">
+										<div class="col-md-9">
+											<table>
+												<tr>
+													<td style="padding: 0px; white-space: nowrap; width: 1%;"><span><b><a style="color: #0099e2; !important;" ng-bind="x.alias" ng-click="openConstruct(x.constructId)"></a></b></span></td>
+													<td class="symbols" style="width: 1%; padding-left: 20px; vertical-align: middle;"><div class="circle"></div></td>
+													<td style="padding: 0px; white-space: nowrap; text-align: left; padding-left: 5px;"><span class="entity-type">[{{x.entityType}}]</span></td>
+												</tr>
+											</table>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<span><b>Name: </b>{{x.name}}</span>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<span><b>Internal Reference: </b>{{x.internalRef}} <b>| Site: </b> {{x.siteName}}</span>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<span><b>Created By: </b>{{x.constructCreatedBy}}</span>
+										</div>
+									</div>
+									<div class="row" ng-if="x.linkedEntityList.length > 0 && x.linkedEntityList[0].linkedConstructList != null">
+										<div class="col-md-12" style="margin-bottom: -15px;">
+											<div class="panel panel-info" style="margin-left: 25px; border-color: #d7d7d8;">
+												<!-- <div class="panel-heading" style="padding: 0px 10px; height: 15px;background-color: #e0ffdc; border-color: #b2ff92; color: #464646;">Linked Entities</div> -->
+												<div class="panel-body" style="padding: 0px 2px;">
+													<div ng-repeat="gList in x.linkedEntityList">
+														<div ng-repeat="cList in gList.linkedConstructList">
+															<div ng-if="cList.linkedStrainList != null && cList.linkedStrainList.length > 0">
+																<div ng-repeat="sList in cList.linkedStrainList" class="col-md-4" style="padding-right: 0px; border-right: 1px solid #ccc;">
+																	<table>
+																		<tr>
+																			<td style="width: 40%;padding-top: 2px;"><span><a style="color: #0965d8 !important;" ng-bind="gList.name" ng-click="openSequence(gList.goiId)"></a></span></td>
+																			<td style="width: 5%"><span class="glyphicon glyphicon-arrow-right" style="color: #686968"> </span></td>
+																			<td style="width: 25%"><span><a ng-if="cList.alias != 'N/A'" style="color: #0965d8 !important;" ng-bind="cList.alias" ng-click="openConstruct(cList.constructId)"></a><span style="color: #686968 !important;" ng-if="cList.alias == 'N/A'" ng-bind="cList.alias"></span></span></td>
+																			<td style="width: 5%"><span class="glyphicon glyphicon-arrow-right" style="color: #686968"> </span></td>
+																			<td style="width: 25%"><span><a style="color: #0965d8 !important;" ng-bind="sList.alias" ng-click="openStrain(sList.strainId)"></a></span></td>
+																		</tr>
+																	</table>
+																</div>
+															</div>
+															<div ng-if="!(cList.linkedStrainList != null && cList.linkedStrainList.length > 0)" class="col-md-4" style="padding-right: 0px; border-right: 1px solid #ccc;">
+																<table>
+																	<tr>
+																		<td style="width: 40%;padding-top: 2px;"><span><a style="color: #0965d8 !important;" ng-bind="gList.name" ng-click="openSequence(gList.goiId)"></a></span></td>
+																		<td style="width: 5%"><span class="glyphicon glyphicon-arrow-right" style="color: #686968"> </span></td>
+																		<td style="width: 25%"><span><a ng-if="cList.alias != 'N/A'" style="color: #0965d8 !important;" ng-bind="cList.alias" ng-click="openConstruct(cList.constructId)"></a><span style="color: #686968 !important;" ng-if="cList.alias == 'N/A'" ng-bind="cList.alias"></span></span></td>
+																		<td style="width: 5%"></td>
+																		<td style="width: 25%"></td>
+																	</tr>
+																</table>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row rowspace"></div>
+									<div class="row rowspace"></div>
+								</div>
+								<div ng-repeat="x in gData.searchResults.strain">
+									<div class="row">
+										<div class="col-md-9">
+											<table>
+												<tr>
+													<td style="padding: 0px; white-space: nowrap; width: 1%;"><span><b><a style="color: #0099e2; !important;" ng-bind="x.alias" ng-click="openStrain(x.strainId)"></a></b></span></td>
+													<td style="padding: 0px; white-space: nowrap; text-align: left; padding-left: 5px; width: 1%;"><img style="height: 17px; cursor: pointer;" src="images/genealogy_new.png" alt="" title="View Strain Genealogy" ng-click="showStrainGenealogy('xlg',x)" /></td>
+													<td class="symbols" style="width: 1%; padding-left: 20px; vertical-align: middle;"><div class="triangle-up"></div></td>
+													<td style="padding: 0px; white-space: nowrap; text-align: left; padding-left: 5px; width: 80%;"><span class="entity-type">[{{x.entityType}}]</span></td>
+												</tr>
+											</table>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<span><b>Name: </b>{{x.name}}</span>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<span><b>Internal Reference: </b>{{x.internalRef}} <b>| Project: </b> {{x.projectName}}</span>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<span><b>Site: </b>{{x.siteName}} <b>| Transformed By: </b> {{x.transformedBy}}</span>
+										</div>
+									</div>
+									<div class="row" ng-if="x.linkedEntityList.length > 0 && x.linkedEntityList[0].linkedConstructList != null">
+										<div class="col-md-12" style="margin-bottom: -15px;">
+											<div class="panel panel-info" style="margin-left: 25px; border-color: #d7d7d8;">
+												<!-- <div class="panel-heading" style="padding: 0px 10px; height: 15px;background-color: #e0ffdc; border-color: #b2ff92; color: #464646;">Linked Entities</div> -->
+												<div class="panel-body" style="padding: 0px 2px;">
+													<div ng-repeat="gList in x.linkedEntityList track by $index">
+														<div ng-repeat="cList in gList.linkedConstructList">
+															<div ng-if="cList.linkedStrainList != null && cList.linkedStrainList.length > 0">
+																<div ng-repeat="sList in cList.linkedStrainList" class="col-md-4" style="padding-right: 0px; border-right: 1px solid #ccc;">
+																	<table>
+																		<tr>
+																			<td style="width: 40%;padding-top: 2px;"><span><a style="color: #0965d8 !important;" ng-bind="gList.name" ng-click="openSequence(gList.goiId)"></a></span></td>
+																			<td style="width: 5%"><span class="glyphicon glyphicon-arrow-right" style="color: #686968"> </span></td>
+																			<td style="width: 25%"><span><a ng-if="cList.alias != 'N/A'" style="color: #0965d8 !important;" ng-bind="cList.alias" ng-click="openConstruct(cList.constructId)"></a><span style="color: #686968 !important;" ng-if="cList.alias == 'N/A'" ng-bind="cList.alias"></span></span></td>
+																			<td style="width: 5%"><span class="glyphicon glyphicon-arrow-right" style="color: #686968"> </span></td>
+																			<td style="width: 25%"><span><a style="color: #0965d8 !important;" ng-bind="sList.alias" ng-click="openStrain(sList.strainId)"></a></span></td>
+																		</tr>
+																	</table>
+																</div>
+															</div>
+															<div ng-if="!(cList.linkedStrainList != null && cList.linkedStrainList.length > 0)" class="col-md-4" style="padding-right: 0px; border-right: 1px solid #ccc;">
+																<table>
+																	<tr>
+																		<td style="width: 40%;padding-top: 2px;"><span><a style="color: #0965d8 !important;" ng-bind="gList.name" ng-click="openSequence(gList.goiId)"></a></span></td>
+																		<td style="width: 5%"><span class="glyphicon glyphicon-arrow-right" style="color: #686968"> </span></td>
+																		<td style="width: 25%"><span><a ng-if="cList.alias != 'N/A'" style="color: #0965d8 !important;" ng-bind="cList.alias" ng-click="openConstruct(cList.constructId)"></a><span style="color: #686968 !important;" ng-if="cList.alias == 'N/A'" ng-bind="cList.alias"></span></span></td>
+																		<td style="width: 5%"></td>
+																		<td style="width: 25%"></td>
+																	</tr>
+																</table>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row rowspace"></div>
+									<div class="row rowspace"></div>
+								</div>
+								<button class="goToTop" ng-click="goToTop()" style="display: none; background: linear-gradient(#20c9dc, #04677d); border-color: #189cab; color: white;" title="Go to Top">
+									<span class="glyphicon glyphicon-arrow-up"></span>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

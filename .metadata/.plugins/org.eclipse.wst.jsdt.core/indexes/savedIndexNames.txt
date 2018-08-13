@@ -1,0 +1,7 @@
+INDEX VERSION 1.4+D:\Diagnal\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+2700306226.index
+3118155515.index
+3879335719.index
+652717618.index
+3435648363.index
+3525169407.index

@@ -1,0 +1,39 @@
+.headerBar {
+	line-height: 4em;
+}
+
+.headerBarInner {
+	background-color: #707070;
+	background-image: url("../images/nav-bar.png");
+	min-height: 65px;
+	position: relative;
+	z-index: 4;
+}
+
+@media ( max-width :767px) {
+	.pImage {
+		height: 180px;
+		width: 100px
+	}
+}
+
+@media ( min-width :768px) {
+	.pImage {
+		height: 250px;
+		width: 150px
+	}
+}
+
+@media ( min-width :992px) {
+	.pImage {
+		height: 350px;
+		width: 250px
+	}
+}
+
+@media ( min-width :1200px) {
+	.pImage {
+		height: 450px;
+		width: 350px
+	}
+}

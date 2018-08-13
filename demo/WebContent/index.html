@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="diagnalApp">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+<title>Diagnal</title>
+
+<!-- Bootstrap -->
+<link href="css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Font Awesome Stylesheet -->
+<link rel="stylesheet" href="css/font-awesome.min.css">
+
+<!-- jQuery UI CSS -->
+<link href="css/jquery-ui.css" rel="stylesheet">
+
+<!-- Datatable Stylesheet -->
+<link rel="stylesheet" href="css/angular-datatables.css">
+
+<!-- Main Stylesheet -->
+<link href="css/style.css" rel="stylesheet">
+</head>
+
+<body ng-controller="diagnalCtrl">
+	<div class="container" style="background: black">
+		<div class="row">
+			<div class="headerBar">
+				<div class="headerBarInner">
+					<div ng-hide="gData.display.search">
+						<div class="input-group" style="width: 100%; padding: 10px">
+							<span style="font-weight: bolder; font-size: 28px; color: white; padding: 5px;">Diagnal</span> <span class="input-group-addon" ng-click="showSearch()" style="background-color: black; border: 1px solid black;"> <img ng-src="./images/search.png" style="height: 24px; width: 24px; float: right;">
+							</span>
+						</div>
+					</div>
+					<div ng-show="gData.display.search">
+						<form ng-submit="search()" ng-cloak>
+							<div class="input-group" style="width: 100%; padding: 10px">
+								<span class="input-group-addon" ng-click="back()" style="background-color: #9c9393;border: 1px solid #a09a9a;"> <img ng-src="./images/Back.png" style="height: 24px; width: 24px; float: right;">
+								</span> <input type="text" class="form-control" placeholder="Search" id="inputGroup" ng-model="gData.keyword" autocomplete="off" style="min-height: 41px"> <span class="input-group-addon" ng-clcik="search()" style="background-color: #e60e0e; border: 1px solid #ef1414;"> <img ng-src="./images/search.png" style="height: 24px; width: 24px; float: right;">
+								</span>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-4  col-xs-4 col-md-4" ng-repeat="item in gData.moviesList" style="padding: 10px">
+				<div>
+					<img ng-src="./images/{{item['poster-image']}}" class="pImage">
+					<div>
+						<h5 style="color: white">{{item.name}}</h5>
+					</div>
+				</div>
+			</div>
+			<div style="height: 90px"></div>
+		</div>
+	</div>
+</body>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="js/libs/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="js/bootstrap.min.js"></script>
+
+<!-- Angular Material requires Angular.js Libraries -->
+<script src="js/libs/angular.min.js"></script>
+<script src="js/libs/angular-animate.min.js"></script>
+<script src="js/libs/angular-aria.min.js"></script>
+<script src="js/libs/angular-messages.min.js"></script>
+<script src="js/libs/angular-sanitize.js"></script>
+<script src="js/libs/angular-cookies.js"></script>
+
+<!-- Angular Spinners -->
+<script src="js/libs/angular-spinners.min.js"></script>
+
+<!-- jQuery UI file -->
+<script src="js/libs/jquery-ui.min.js"></script>
+
+<!-- JS Tree files -->
+<script src="js/libs/jquery.marquee.min.js"></script>
+
+<!-- jQuery Data Table -->
+<script src="js/libs/jquery.dataTables.min.js"></script>
+
+<!-- Angular App Main file -->
+<script src="js/angular/main.js"></script>
+
+<!-- Angular Data Table -->
+<script src="js/libs/angular-datatables.min.js"></script>
+
+</body>
+
+</html>
